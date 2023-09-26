@@ -1,28 +1,28 @@
-import useSWR from "swr";
-import AddTodo from "./components/AddTodo";
-
-export interface Todo {
-  name: string;
-}
+import { Button } from "@mantine/core";
+import Header from "./components/Header";
+import { Home } from "./components/Home";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Register from "./pages/Register";
+import AddTodo from "./pages/AddTodo";
+import Login from "./pages/Login";
+// import TodoList from "./components/TodoList"; // Assuming you have a component for displaying the todo list
 
 function App() {
-  const fetcher = (url:string) => fetch(url).then((res) => res.json());
-  const { data, mutate, error, isLoading } = useSWR<Todo[]>("http://localhost:8080", fetcher);
 
-  // Conditional rendering
   return (
-    <div>
-      {error ? (
-        <div>Error: {error.message}</div>
-      ) : data ? (
-        data.map((todo) => {
-          return <p key={todo.name}>{todo.name}</p>; // Add a unique key
-        })
-      ) : (
-        <div>Loading...</div>
-      )}
-      <AddTodo mutate={mutate} />
-    </div>
+   <>
+   <BrowserRouter>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/todo" element={<AddTodo />} />
+      </Routes>
+   </BrowserRouter>
+
+   </>
   );
 }
 
