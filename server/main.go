@@ -21,6 +21,9 @@ type Todo struct {
 	Todo        string `json:"todo"`
 	Description string `json:"description"`
 	Done        bool   `json:"done"`
+	Priority    string `json:"priority"`
+	Category    string `json:"category"`
+	User_email  string `json:"user_email"`
 }
 
 type User struct {
@@ -44,11 +47,14 @@ func main() {
 
 	setupDatabase()
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	app.Get("/api/todos/:email", func(c *fiber.Ctx) error {
+
 		todos = nil
 
-		query := "SELECT id, todo, description, done FROM todos ORDER BY created_at DESC"
-		rows, err := db.Query(query)
+		userEmail := c.Params("email")
+
+		query := "SELECT id, todo, description, done, priority, category FROM todos WHERE user_email = ? ORDER BY created_at DESC"
+		rows, err := db.Query(query, userEmail)
 		if err != nil {
 			log.Printf("Error executing query: %v", err)
 			return c.Status(http.StatusInternalServerError).SendString("Internal Server Error")
@@ -57,7 +63,7 @@ func main() {
 
 		for rows.Next() {
 			var todo Todo
-			err = rows.Scan(&todo.ID, &todo.Todo, &todo.Description, &todo.Done)
+			err = rows.Scan(&todo.ID, &todo.Todo, &todo.Description, &todo.Done, &todo.Priority, &todo.Category)
 			if err != nil {
 				log.Printf("Error scanning row: %v", err)
 				return c.Status(http.StatusInternalServerError).SendString("Internal Server Error")
@@ -80,7 +86,7 @@ func main() {
 
 		// Your code to insert data into the database using the username
 		// Example: Insert the username into the 'users' table
-		_, err := db.Exec("INSERT INTO todos (id, todo, description, done) VALUES (?, ?, ?, ?)", todo.ID, todo.Todo, todo.Description, todo.Done)
+		_, err := db.Exec("INSERT INTO todos (id, todo, description, done, priority, category, user_email) VALUES (?, ?, ?, ?, ?, ?, ?)", todo.ID, todo.Todo, todo.Description, todo.Done, todo.Priority, todo.Category, todo.User_email)
 		if err != nil {
 			// Handle the error (e.g., return an error response)
 			return err

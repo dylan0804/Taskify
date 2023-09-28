@@ -1,19 +1,17 @@
+import { Button, Card, CardBody, Input, List, ListItem, ListItemPrefix, Typography } from '@material-tailwind/react';
 import React from 'react'
-import { Modal, Button, TextInput, Textarea } from '@mantine/core'
-import { useForm } from '@mantine/form'
+import { useState } from 'react';
 
 const Login = () => {
-    const form = useForm({
-        initialValues: {
-           email: "",
-           password: ""
-        }
-    })
 
-    const loginUser = async (values: {email: string, password: string}) => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
       const requestBody = {
-          email: values.email,
-          password: values.password,
+          email: email,
+          password: password,
         };    
   
       const updated = await fetch('http://localhost:8080/api/login', {
@@ -24,20 +22,34 @@ const Login = () => {
           credentials: 'include',
           body: JSON.stringify(requestBody)
       }).then((r) => r.json());
-      
+
       console.log(updated)
+
+      localStorage.setItem("currentEmail", requestBody.email)
+      console.log(localStorage.getItem("currentEmail"))
   }
   return (
    <>
-          <form action="" onSubmit={form.onSubmit(loginUser)} >
-            <TextInput required mb={12} label="Email" placeholder="Input your email"
-            {...form.getInputProps("email")}/>
-            <Textarea required mb={12} label="Password" placeholder="Input your password" 
-            {...form.getInputProps("password")}/>
-            <div className='flex justify-center'>
-                <Button type="submit">Login</Button>
-            </div>
-        </form>
+        <div className="w-1/2 m-auto">
+        <Card className="mt-6 w-full">
+          <div className='p-4'>
+            <Typography variant='h5' color='blue-gray' className='text-center' >
+              Login
+            </Typography>
+                  <CardBody>
+                    <form onSubmit={(e) => loginUser(e)}>
+                      <div className="mb-4 flex flex-col gap-6">
+                        <Input size="lg" label="Email" crossOrigin={undefined} value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <Input size="lg" label="Password" crossOrigin={undefined} value={password} onChange={(e) => setPassword(e.target.value)} />
+                      </div>
+                      <Button type="submit" className="mt-6" fullWidth>
+                        Login
+                      </Button>
+                  </form>
+                </CardBody>
+          </div>
+    </Card>
+    </div>
    </>
   )
 }
