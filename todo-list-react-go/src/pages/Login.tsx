@@ -1,8 +1,10 @@
 import { Button, Card, CardBody, Input, List, ListItem, ListItemPrefix, Typography } from '@material-tailwind/react';
 import React from 'react'
 import { useState } from 'react';
+import { KeyedMutator } from 'swr';
+import { User } from '../User';
 
-const Login = () => {
+const Login = ({mutateUser}: {mutateUser: KeyedMutator<User>}) => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -22,6 +24,8 @@ const Login = () => {
           credentials: 'include',
           body: JSON.stringify(requestBody)
       }).then((r) => r.json());
+
+      mutateUser(updated)
 
       console.log(updated)
 

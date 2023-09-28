@@ -5,15 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 // import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-tailwind/react';
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-  <ThemeProvider>
-    <App />
-  </ThemeProvider>
+  <MantineProvider>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </MantineProvider>
 </React.StrictMode>
 );
 

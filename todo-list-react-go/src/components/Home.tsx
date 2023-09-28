@@ -2,42 +2,25 @@ import React from 'react';
 import { User } from '../User';
 import useSWR from 'swr';
 import { Todo } from '../Todo';
-import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Typography } from '@material-tailwind/react';
+import { Chip } from '@material-tailwind/react';
+import { Button } from '@mantine/core';
 
-export const Home = ({todos}: {todos: Todo[]}) => {
-  const { data } = useSWR<User>("http://localhost:8080/api/user", async (url) => {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // Include cookies if necessary for authentication
-    });
-    return response.json();
-  });
+export const Home = ({todosData}: {todosData: Todo[]}) => {
 
   // Add a console.log statement here to inspect the data
-  console.log(data);
+  // console.log(data);
 
    return (
   <>
     <div className='p-10 w-full h-screen'>
-      {data ? (
-        <div>
-          <p>Name: {data.name}</p>
-          <p>Email: {data.email}</p>
-        </div>
-      ) : (
-        <div>Loading...</div>
-      )}
       <div>
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
-        {todos ? (
-          todos.map((todo) => (
+      <div className="flex flex-wrap gap-6">
+        {todosData ? (
+          todosData.map((todo) => (
             <div className="bg-white rounded-lg shadow-md overflow-hidden w-[275px]">
               <div className="p-6">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-2">{todo.todo}</h2>
-                <p className="text-gray-600">{todo.description}</p>
+                <p className="text-gray-600 overflow-clip">{todo.description}</p>
                 <div className='flex gap-2'>
                   <Chip className='w-min mt-5' color="blue" value={todo.priority} />
                   <Chip className='w-min mt-5' color="green" value={todo.category} />
